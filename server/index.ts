@@ -1,5 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
@@ -17,7 +20,7 @@ app.post('/completions', async (req: any, res: any) => {
     const options = {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
