@@ -4,31 +4,32 @@ import { useState, useEffect } from "react";
 function App() {
 
   const [message, setMessage] = useState(null);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState('');
   const [previousChats, setPreviousChats] = useState([]);
   const [currentTitle, setCurrentTitle] = useState('');
 
   useEffect(() => {
     console.log(currentTitle, value, message);
     if (!currentTitle && value && message) {
-      setCurrentTitle(value);
+        setCurrentTitle(value);
     }
     if (currentTitle && value && message) {
-      setPreviousChats((prevChats: any) => (
-        [...prevChats, {
-          title: currentTitle,
-          role: 'user',
-          content: value
-        }, {
-          title: currentTitle,
-          role: message. role,
-          content: message.content
-        }]
-      ))
+        setPreviousChats((prevChats: any) => (
+            [...prevChats, {
+                title: currentTitle,
+                role: 'user',
+                content: value
+            }, {
+                title: currentTitle,
+                role: message.role,
+                content: message.content
+            }]
+        ));
     }
-  }, [message, currentTitle])
+}, [message, currentTitle]);
 
   const getMessages = async () => {
+    console.log(previousChats)
 
     const options = {
       method: 'POST',
@@ -43,6 +44,7 @@ function App() {
     try {
       const response = await fetch('http://localhost:5000/completions', options);
       const data = await response.json();
+      console.log(data);
       setMessage(data.choices[0].message);
     } catch (error) {
       console.error(error);
@@ -61,7 +63,7 @@ function App() {
       </section>
 
       <section className='bg-gray-900 h-screen w-full flex flex-col items-center justify-between p-5'>
-        <h1 className='text-3xl text-white font-bold'>CloneGPT</h1>
+        {!currentTitle && <h1 className='text-3xl text-white font-bold'>CloneGPT</h1>}
 
         <ul>
 

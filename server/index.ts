@@ -6,9 +6,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const OPENAI_API_KEY="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"
+const OPENAI_API_KEY="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"
 
-app.get('/', (req, res) => {
+app.get('/', (req: any, res: any) => {
     res.send('Hello, World!');
 });
 
@@ -18,7 +18,7 @@ app.post('/completions', async (req: any, res: any) => {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${OPENAI_API_KEY}`,
-            'Content-Tyoe': 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             model: 'gpt-3.5-turbo',
