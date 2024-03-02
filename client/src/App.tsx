@@ -57,13 +57,17 @@ function App() {
     setCurrentTitle('');
   };
 
-  const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle)
+  const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
+
+  const uniqueTitles = Array.from(new Set(previousChats.map((previousChat: any) => previousChat.title)));
+
 
   return (
     <div className="flex h-screen w-screen">
       <section className='h-screen w-1/6 bg-black p-5 text-white flex flex-col justify-between'>
         <button onClick={createNewChat} className='border-white bg-transparent text-white w-full rounded-xl p-3 mb-10'>+ New Chat</button>
         <ul className='flex flex-col items-center gap-5'>
+          {uniqueTitles?.map((uniqueTitle, index) => <li key={index}>{uniqueTitle}</li>)}
         </ul>
         <nav className=''>
           <p>Made by João Dantas</p>
@@ -74,7 +78,7 @@ function App() {
         {!currentTitle && <h1 className='text-3xl text-white font-bold'>CloneGPT</h1>}
 
         <ul>
-          {currentChat.map((chatMessage: any, index: any) => <li key={index}>
+          {currentChat?.map((chatMessage: any, index: any) => <li key={index}>
             <p className="font-bold">{chatMessage.role}</p>
             <p>{chatMessage.message}</p>
             </li>)}
