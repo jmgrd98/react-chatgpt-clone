@@ -60,7 +60,6 @@ function App() {
     setCurrentTitle(uniqueTitle);
     setMessage(null);
     setValue('');
-    setCurrentTitle('');
   };
 
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
