@@ -51,10 +51,18 @@ function App() {
     }
   }
 
+  const createNewChat = () => {
+    setMessage(null);
+    setValue('');
+    setCurrentTitle('');
+  };
+
+  const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle)
+
   return (
     <div className="flex h-screen w-screen">
       <section className='h-screen w-1/6 bg-black p-5 text-white flex flex-col justify-between'>
-        <button className='border-white bg-transparent text-white w-full rounded-xl p-3 mb-10'>+ New Chat</button>
+        <button onClick={createNewChat} className='border-white bg-transparent text-white w-full rounded-xl p-3 mb-10'>+ New Chat</button>
         <ul className='flex flex-col items-center gap-5'>
         </ul>
         <nav className=''>
@@ -66,7 +74,10 @@ function App() {
         {!currentTitle && <h1 className='text-3xl text-white font-bold'>CloneGPT</h1>}
 
         <ul>
-
+          {currentChat.map((chatMessage: any, index: any) => <li key={index}>
+            <p className="font-bold">{chatMessage.role}</p>
+            <p>{chatMessage.message}</p>
+            </li>)}
         </ul>
 
         <div className='w-full'>
