@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
-app.post('/completions', async (req, res) => {
+app.post('/completions', async (req: any, res: any) => {
 
     const options = {
         method: 'POST',
@@ -25,7 +25,7 @@ app.post('/completions', async (req, res) => {
             messages: [
                 {
                     role: 'user',
-                    content: 'how are you?'
+                    content: req.body.message
                 }
             ],
             max_tokens: 100

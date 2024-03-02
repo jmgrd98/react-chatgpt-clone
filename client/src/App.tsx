@@ -1,13 +1,39 @@
 import { IoMdSend } from "react-icons/io";
+import { useState, useEffect } from "react";
 
 function App() {
+
+  const [message, setMessage] = useState(null);
+  const [value, setValue] = useState(null);
+  const [previousChats, setPreviousChats] = useState([]);
+  const [currentTitle, setCurrentTitle] = useState('');
+
+  useEffect(() => {
+    console.log(currentTitle, value, message);
+    if (!currentTitle && value && message) {
+      setCurrentTitle(value);
+    }
+    if (currentTitle && value && message) {
+      setPreviousChats((prevChats: any) => (
+        [...prevChats, {
+          title: currentTitle,
+          role: 'user',
+          content: value
+        }, {
+          title: currentTitle,
+          role: message. role,
+          content: message.content
+        }]
+      ))
+    }
+  }, [message, currentTitle])
 
   const getMessages = async () => {
 
     const options = {
       method: 'POST',
       body: JSON.stringify({
-        message: 'hello how are you?'
+        message: value
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -17,7 +43,7 @@ function App() {
     try {
       const response = await fetch('http://localhost:5000/completions', options);
       const data = await response.json();
-      console.log(data);
+      setMessage(data.choices[0].message);
     } catch (error) {
       console.error(error);
     }
@@ -43,7 +69,7 @@ function App() {
 
         <div className='w-full'>
           <div className="flex gap-3 items-center">
-            <input className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
+            <input value={value} onChange={(e) => setValue(e.target.value)} className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
             <div onClick={getMessages}>
               <IoMdSend className="text-white"/>
             </div>
