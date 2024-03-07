@@ -9,8 +9,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const OPENAI_API_KEY="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"
-
 app.get('/', (req: any, res: any) => {
     res.send('Hello, World!');
 });
