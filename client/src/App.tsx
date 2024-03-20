@@ -1,6 +1,6 @@
 import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from "react";
-import { environment } from '../environment.ts';
+// import { environment } from '../environment.ts';
 
 function App() {
 
@@ -37,7 +37,7 @@ function App() {
         message: value
       }),
       headers: {
-        'Authorization': `Bearer ${environment.openAIApiKey}`,
+        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
       }
     }
