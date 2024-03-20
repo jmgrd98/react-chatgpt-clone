@@ -1,11 +1,12 @@
 import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from "react";
+import { environment } from '../environment.ts';
 
 function App() {
 
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState<any>(null);
   const [value, setValue] = useState('');
-  const [previousChats, setPreviousChats] = useState([]);
+  const [previousChats, setPreviousChats] = useState<any>([]);
   const [currentTitle, setCurrentTitle] = useState('');
 
   useEffect(() => {
@@ -25,7 +26,7 @@ function App() {
             }]
         ));
     }
-}, [message, currentTitle]);
+}, [message, currentTitle, value]);
 
   const getMessages = async () => {
     console.log(previousChats)
@@ -36,12 +37,14 @@ function App() {
         message: value
       }),
       headers: {
+        'Authorization': `Bearer ${environment.openAIApiKey}`,
         'Content-Type': 'application/json'
       }
     }
 
     try {
       const response = await fetch('http://54.207.142.190:5000/completions', options);
+      // const response = await fetch('http://localhost:5000/completions', options);
       const data = await response.json();
       console.log(data);
       setMessage(data.choices[0].message);
@@ -72,7 +75,7 @@ function App() {
       <section className='h-screen w-1/6 bg-black p-5 text-white flex flex-col justify-between'>
         <button onClick={createNewChat} className='border-white bg-transparent text-white w-full rounded-xl p-3 mb-10'>+ New Chat</button>
         <ul className='flex flex-col items-center gap-5'>
-          {uniqueTitles?.map((uniqueTitle, index) => <li key={index} className="cursor-pointer" onClick={() => handleClick(uniqueTitle)}>{uniqueTitle}</li>)}
+          {uniqueTitles?.map((uniqueTitle, index) => <li key={index} className="cursor-pointer" onClick={() => handleClick(uniqueTitle as string)}>{uniqueTitle as string}</li>)}
         </ul>
         <nav className=''>
           <p>Made by João Dantas</p>
