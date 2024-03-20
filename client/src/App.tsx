@@ -1,6 +1,6 @@
 import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from "react";
-// import { environment } from '../environment.ts';
+import { environment } from '../environment.ts';
 
 function App() {
 
@@ -37,14 +37,14 @@ function App() {
         message: value
       }),
       headers: {
-        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${environment.openAIApiKey}`,
         'Content-Type': 'application/json'
       }
     }
 
     try {
-      const response = await fetch('http://54.207.142.190:5000/completions', options);
-      // const response = await fetch('http://localhost:5000/completions', options);
+      // const response = await fetch('http://54.207.142.190:5000/completions', options);
+      const response = await fetch('http://localhost:5000/completions', options);
       const data = await response.json();
       console.log(data);
       setMessage(data.choices[0].message);
