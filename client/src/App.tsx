@@ -1,6 +1,7 @@
 import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from "react";
 import { environment } from '../environment.ts';
+import Sidebar from "./components/Sidebar.tsx";
 
 function App() {
 
@@ -72,15 +73,7 @@ function App() {
 
   return (
     <div className="flex h-screen w-screen">
-      <section className='h-screen w-1/6 bg-black p-5 text-white flex flex-col justify-between'>
-        <button onClick={createNewChat} className='border-white bg-transparent text-white w-full rounded-xl p-3 mb-10'>+ New Chat</button>
-        <ul className='flex flex-col items-center gap-5'>
-          {uniqueTitles?.map((uniqueTitle, index) => <li key={index} className="cursor-pointer" onClick={() => handleClick(uniqueTitle as string)}>{uniqueTitle as string}</li>)}
-        </ul>
-        <nav className=''>
-          <p>Made by João Dantas</p>
-        </nav>
-      </section>
+      <Sidebar/>
 
       <section className='bg-gray-900 h-screen w-full flex flex-col items-center justify-between p-5'>
         {!currentTitle ? <h1 className='text-3xl text-white font-bold'>CloneGPT</h1> : <h1 className='text-3xl text-white font-bold'>{currentTitle}</h1>}
