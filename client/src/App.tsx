@@ -50,29 +50,36 @@ function App() {
   }
 
   const getMessages = async () => {
+
     const options = {
       method: 'POST',
-      body: JSON.stringify({
-        message: inputValue
-      }),
       headers: {
-        'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
-      }
-    }
-
-    try {
-      const response = await fetch('http://localhost:5000/completions', options);
-      const data = await response.json();
-      console.log(previousChats);
-      updateMessage(data.choices[0].message);
-      updateValue(inputValue);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setInputValue('');
-    }
+          'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+              {
+                  role: 'user',
+                  content: inputValue
+              }
+          ],
+          max_tokens: 100
+      })
   }
+
+  try {
+        const response = await fetch('\n' + 'https://api.openai.com/v1/chat/completions', options);
+        const data = await response.json();
+        updateMessage(data.choices[0].message);
+        updateValue(inputValue);
+      } catch (error) {
+          console.error(error);
+        } finally {
+          setInputValue('');
+        }
+  };
 
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
 
