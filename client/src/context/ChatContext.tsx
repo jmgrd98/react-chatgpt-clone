@@ -4,7 +4,7 @@ import { createContext, useState, useContext } from "react";
 
 interface ChatContextType {
     previousChats: any[];
-    updatePreviousChats: (newPreviousChats: any[]) => void;
+    updatePreviousChats: (newPreviousChats: any) => void;
     currentTitle: string;
     updateCurrentTitle: (newCurrentTitle: string) => void;
     message: any;

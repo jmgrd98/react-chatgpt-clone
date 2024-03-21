@@ -1,8 +1,9 @@
 import { IoMdSend } from "react-icons/io";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { environment } from '../environment.ts';
 import Sidebar from "./components/Sidebar.tsx";
 import { useChatContext } from "./context/ChatContext.tsx";
+import TypewriterComponent from "typewriter-effect";
 
 function App() {
 
@@ -25,11 +26,11 @@ function App() {
         updatePreviousChats((prevChats: any) => (
             [...prevChats, {
                 title: currentTitle,
-                role: 'user',
+                role: 'User',
                 content: value
             }, {
                 title: currentTitle,
-                role: message.role,
+                role: 'CloneGPT',
                 content: message.content
             }]
         ));
@@ -55,6 +56,7 @@ function App() {
       const data = await response.json();
       console.log(data);
       updateMessage(data.choices[0].message);
+      typeText(document.getElementById('message'), data.choices[0].message)
     } catch (error) {
       console.error(error);
     }
@@ -62,6 +64,30 @@ function App() {
 
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
 
+  const loader = (element: any) => {
+    element.textContent = '';
+    let loadInterval = setInterval(() => {
+      element.textContent += '.';
+
+      if (element.textContent === '....') {
+        element.textContent = '';
+      }
+    }, 300);
+  };
+
+  const typeText = (element: any, text: string) => {
+    console.log(element, text)
+    let index = 0;
+
+    let interval = setInterval(() => {
+      if (index < text.length) {
+        element.innerHTML += text.charAt(index);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 20)
+  };
 
   return (
     <div className="flex h-screen w-screen">
@@ -71,15 +97,30 @@ function App() {
         {!currentTitle ? <h1 className='text-3xl text-white font-bold'>CloneGPT</h1> : <h1 className='text-3xl text-white font-bold'>{currentTitle}</h1>}
 
         <ul>
-          {currentChat?.map((chatMessage: any, index: any) => <li key={index}>
-            <p className="text-gray-300 font-bold">{chatMessage.role}</p>
-            <p className="text-gray-300">{chatMessage.content}</p>
-            </li>)}
+          {currentChat?.map((chatMessage: any, index: any) => (
+            <li key={index} className="my-5">
+              <p className="text-gray-300 font-bold">{chatMessage.role}</p>
+              <div className="text-gray-300" id="message">{chatMessage.role === 'CloneGPT' ? (
+                <TypewriterComponent 
+                  options={{
+                    delay: 5,
+                    wrapperClassName: 'text-white',
+                    strings: [
+                      chatMessage.content
+                    ],
+                    autoStart: true,
+                    deleteSpeed: 0
+                  }}
+                />
+              ) : chatMessage.content}
+              </div>
+            </li>
+          ))}
         </ul>
 
         <div className='w-full'>
           <div className="flex gap-3 items-center">
-            <input placeholder="Digite sua mensagem" value={value} onChange={(e) => updateValue(e.target.value)} className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
+            <input placeholder="Type your message..." value={value} onChange={(e) => updateValue(e.target.value)} className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
             <div onClick={getMessages}>
               <IoMdSend className="text-white"/>
             </div>
