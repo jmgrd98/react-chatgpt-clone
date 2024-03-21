@@ -5,11 +5,8 @@ const Sidebar = () => {
     const { 
         previousChats,
         updatePreviousChats,
-        currentTitle,
         updateCurrentTitle,
-        message, 
         updateMessage,
-        value,
         updateValue
      } = useChatContext();
 
