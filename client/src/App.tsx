@@ -6,7 +6,6 @@ import { useChatContext } from "./context/ChatContext.tsx";
 import { Typewriter } from 'react-simple-typewriter'
 
 function App() {
-
   const { 
     previousChats,
     updatePreviousChats,
@@ -16,7 +15,7 @@ function App() {
     updateMessage,
     value,
     updateValue
- } = useChatContext();
+  } = useChatContext();
 
   const [inputValue, setInputValue] = useState('');
 
@@ -37,14 +36,23 @@ function App() {
             }]
         ));
     }
-}, [message, currentTitle, value]);
+  }, [message, currentTitle, value]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      getMessages();
+    }
+  }
 
   const getMessages = async () => {
-
     const options = {
       method: 'POST',
       body: JSON.stringify({
-        message: value
+        message: inputValue
       }),
       headers: {
         'Authorization': `Bearer ${environment.openAIApiKey}`,
@@ -53,12 +61,11 @@ function App() {
     }
 
     try {
-      // const response = await fetch('http://54.207.142.190:5000/completions', options);
       const response = await fetch('http://localhost:5000/completions', options);
       const data = await response.json();
       console.log(data);
       updateMessage(data.choices[0].message);
-      updateValue(inputValue)
+      updateValue(inputValue);
     } catch (error) {
       console.error(error);
     } finally {
@@ -68,14 +75,11 @@ function App() {
 
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
 
-
   return (
     <div className="flex h-screen w-screen">
       <Sidebar/>
-
       <section className='bg-gray-900 h-screen w-full flex flex-col items-center justify-between p-5'>
         {!currentTitle ? <h1 className='text-3xl text-white font-bold'>CloneGPT</h1> : <h1 className='text-3xl text-white font-bold'>{currentTitle}</h1>}
-
         <ul>
           {currentChat?.map((chatMessage: any, index: any) => (
             <li key={index} className="my-5">
@@ -84,26 +88,30 @@ function App() {
                 <Typewriter 
                   words={[chatMessage.content]}
                   typeSpeed={20}
-                  
                 />
               ) : chatMessage.content}
               </div>
             </li>
           ))}
         </ul>
-
         <div className='w-full'>
           <div className="flex gap-3 items-center">
-            <input placeholder="Type your message..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
+            <input 
+              placeholder="Type your message..." 
+              value={inputValue} 
+              onChange={handleInputChange} 
+              onKeyPress={handleKeyPress}
+              className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' 
+              type='text'
+            />
             <div onClick={getMessages}>
               <IoMdSend className="text-white"/>
             </div>
           </div>
-
         </div>
       </section>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
