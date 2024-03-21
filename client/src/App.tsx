@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { environment } from '../environment.ts';
 import Sidebar from "./components/Sidebar.tsx";
 import { useChatContext } from "./context/ChatContext.tsx";
-import TypewriterComponent from "typewriter-effect";
+import { Typewriter } from 'react-simple-typewriter'
 
 function App() {
 
@@ -18,7 +18,7 @@ function App() {
     updateValue
  } = useChatContext();
 
- const [typingText, setTypingText] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     if (!currentTitle && value && message) {
@@ -58,9 +58,11 @@ function App() {
       const data = await response.json();
       console.log(data);
       updateMessage(data.choices[0].message);
-      setTypingText(true);
+      updateValue(inputValue)
     } catch (error) {
       console.error(error);
+    } finally {
+      setInputValue('');
     }
   }
 
@@ -79,21 +81,10 @@ function App() {
             <li key={index} className="my-5">
               <p className="text-gray-300 font-bold">{chatMessage.role}</p>
               <div className="text-gray-300" id="message">{chatMessage.role === 'CloneGPT' ? (
-                <TypewriterComponent 
-                  options={{
-                    delay: 5,
-                    wrapperClassName: 'text-white',
-                    strings: [
-                      chatMessage.content
-                    ],
-                    autoStart: true,
-                  }}
-                  onInit={(typewriter) => { 
-                    typewriter.start();
-                    if (typingText) {
-                      typewriter.stop();
-                    }
-                  }}
+                <Typewriter 
+                  words={[chatMessage.content]}
+                  typeSpeed={20}
+                  
                 />
               ) : chatMessage.content}
               </div>
@@ -103,7 +94,7 @@ function App() {
 
         <div className='w-full'>
           <div className="flex gap-3 items-center">
-            <input placeholder="Type your message..." value={value} onChange={(e) => updateValue(e.target.value)} className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
+            <input placeholder="Type your message..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
             <div onClick={getMessages}>
               <IoMdSend className="text-white"/>
             </div>

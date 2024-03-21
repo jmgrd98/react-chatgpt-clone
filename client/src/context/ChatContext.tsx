@@ -1,5 +1,3 @@
-// ChatContext.tsx
-
 import { createContext, useState, useContext } from "react";
 
 interface ChatContextType {
