@@ -1,5 +1,5 @@
 import { IoMdSend } from "react-icons/io";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { environment } from '../environment.ts';
 import Sidebar from "./components/Sidebar.tsx";
 import { useChatContext } from "./context/ChatContext.tsx";
@@ -17,6 +17,8 @@ function App() {
     value,
     updateValue
  } = useChatContext();
+
+ const [typingText, setTypingText] = useState(false);
 
   useEffect(() => {
     if (!currentTitle && value && message) {
@@ -56,7 +58,7 @@ function App() {
       const data = await response.json();
       console.log(data);
       updateMessage(data.choices[0].message);
-      typeText(document.getElementById('message'), data.choices[0].message)
+      setTypingText(true);
     } catch (error) {
       console.error(error);
     }
@@ -64,30 +66,6 @@ function App() {
 
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
 
-  const loader = (element: any) => {
-    element.textContent = '';
-    let loadInterval = setInterval(() => {
-      element.textContent += '.';
-
-      if (element.textContent === '....') {
-        element.textContent = '';
-      }
-    }, 300);
-  };
-
-  const typeText = (element: any, text: string) => {
-    console.log(element, text)
-    let index = 0;
-
-    let interval = setInterval(() => {
-      if (index < text.length) {
-        element.innerHTML += text.charAt(index);
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 20)
-  };
 
   return (
     <div className="flex h-screen w-screen">
@@ -109,7 +87,12 @@ function App() {
                       chatMessage.content
                     ],
                     autoStart: true,
-                    deleteSpeed: 0
+                  }}
+                  onInit={(typewriter) => { 
+                    typewriter.start();
+                    if (typingText) {
+                      typewriter.stop();
+                    }
                   }}
                 />
               ) : chatMessage.content}
