@@ -2,20 +2,27 @@ import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from "react";
 import { environment } from '../environment.ts';
 import Sidebar from "./components/Sidebar.tsx";
+import { useChatContext } from "./context/ChatContext.tsx";
 
 function App() {
 
-  const [message, setMessage] = useState<any>(null);
-  const [value, setValue] = useState('');
-  const [previousChats, setPreviousChats] = useState<any>([]);
-  const [currentTitle, setCurrentTitle] = useState('');
+  const { 
+    previousChats,
+    updatePreviousChats,
+    currentTitle,
+    updateCurrentTitle,
+    message, 
+    updateMessage,
+    value,
+    updateValue
+ } = useChatContext();
 
   useEffect(() => {
     if (!currentTitle && value && message) {
-        setCurrentTitle(value);
+        updateCurrentTitle(value);
     }
     if (currentTitle && value && message) {
-        setPreviousChats((prevChats: any) => (
+        updatePreviousChats((prevChats: any) => (
             [...prevChats, {
                 title: currentTitle,
                 role: 'user',
@@ -30,7 +37,6 @@ function App() {
 }, [message, currentTitle, value]);
 
   const getMessages = async () => {
-    console.log(previousChats)
 
     const options = {
       method: 'POST',
@@ -48,27 +54,13 @@ function App() {
       const response = await fetch('http://localhost:5000/completions', options);
       const data = await response.json();
       console.log(data);
-      setMessage(data.choices[0].message);
+      updateMessage(data.choices[0].message);
     } catch (error) {
       console.error(error);
     }
   }
 
-  const createNewChat = () => {
-    setMessage(null);
-    setValue('');
-    setCurrentTitle('');
-  };
-
-  const handleClick = (uniqueTitle: string) => {
-    setCurrentTitle(uniqueTitle);
-    setMessage(null);
-    setValue('');
-  };
-
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
-
-  const uniqueTitles = Array.from(new Set(previousChats.map((previousChat: any) => previousChat.title)));
 
 
   return (
@@ -87,7 +79,7 @@ function App() {
 
         <div className='w-full'>
           <div className="flex gap-3 items-center">
-            <input placeholder="Digite sua mensagem" value={value} onChange={(e) => setValue(e.target.value)} className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
+            <input placeholder="Digite sua mensagem" value={value} onChange={(e) => updateValue(e.target.value)} className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' type='text'/>
             <div onClick={getMessages}>
               <IoMdSend className="text-white"/>
             </div>
