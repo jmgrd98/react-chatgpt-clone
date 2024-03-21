@@ -21,7 +21,7 @@ export const useChatContext = () => {
     return context;
 };
 
-export const ChatContextProvider: React.FC = ({ children }: any) => {
+export const ChatContextProvider = ({ children }: {children: React.ReactNode}) => {
     const [previousChats, setPreviousChats] = useState<any>([]);
     const [currentTitle, setCurrentTitle] = useState('');
     const [message, setMessage] = useState<any>(null);
