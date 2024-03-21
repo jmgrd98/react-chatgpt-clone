@@ -1,10 +1,10 @@
 import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from "react";
-import { environment } from '../environment.ts';
 import Sidebar from "./components/Sidebar.tsx";
 import { useChatContext } from "./context/ChatContext.tsx";
 import { Typewriter } from 'react-simple-typewriter';
 import ReactMarkdown from 'react-markdown';
+const { REACT_APP_OPENAI_API_KEY } = import.meta.env;
 
 function App() {
   const { 
@@ -56,7 +56,7 @@ function App() {
         message: inputValue
       }),
       headers: {
-        'Authorization': `Bearer ${environment.openAIApiKey}`,
+        'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
       }
     }
