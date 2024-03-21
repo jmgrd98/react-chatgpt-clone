@@ -1,6 +1,19 @@
+// ChatContext.tsx
+
 import { createContext, useState, useContext } from "react";
 
-const ChatContext = createContext(null);
+interface ChatContextType {
+    previousChats: any[];
+    updatePreviousChats: (newPreviousChats: any[]) => void;
+    currentTitle: string;
+    updateCurrentTitle: (newCurrentTitle: string) => void;
+    message: any;
+    updateMessage: (newMessage: any) => void;
+    value: string;
+    updateValue: (newValue: string) => void;
+}
+
+const ChatContext = createContext<ChatContextType | null>(null);
 
 export const useChatContext = () => {
     const context = useContext(ChatContext);
@@ -10,7 +23,7 @@ export const useChatContext = () => {
     return context;
 };
 
-export const ChatContextProvider = ({ children }: any) => {
+export const ChatContextProvider: React.FC = ({ children }: any) => {
     const [previousChats, setPreviousChats] = useState<any>([]);
     const [currentTitle, setCurrentTitle] = useState('');
     const [message, setMessage] = useState<any>(null);
@@ -20,7 +33,7 @@ export const ChatContextProvider = ({ children }: any) => {
         setPreviousChats(newPreviousChats);
     }
 
-    const updateCurrentTitle = (newCurrentTitle: any) => {
+    const updateCurrentTitle = (newCurrentTitle: string) => {
         setCurrentTitle(newCurrentTitle);
     }
 
@@ -28,13 +41,11 @@ export const ChatContextProvider = ({ children }: any) => {
         setMessage(newMessage);
     }
 
-    const updateValue = (newValue: any) => {
+    const updateValue = (newValue: string) => {
         setValue(newValue);
     }
 
-
-
-    const contextValue: any = {
+    const contextValue: ChatContextType = {
         previousChats,
         updatePreviousChats,
         currentTitle,
