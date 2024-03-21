@@ -64,7 +64,7 @@ function App() {
     try {
       const response = await fetch('http://localhost:5000/completions', options);
       const data = await response.json();
-      console.log(data);
+      console.log(previousChats);
       updateMessage(data.choices[0].message);
       updateValue(inputValue);
     } catch (error) {
@@ -80,7 +80,7 @@ function App() {
     <div className="flex h-screen w-screen">
       <Sidebar/>
       <section className='bg-gray-900 h-screen w-full flex flex-col items-center justify-between p-5'>
-        {!currentTitle ? <h1 className='text-3xl text-white font-bold'>CloneGPT</h1> : <h1 className='text-3xl text-white font-bold'>{currentTitle}</h1>}
+        {(!currentTitle || !previousChats.length) ? <h1 className='text-3xl text-white font-bold'>CloneGPT</h1> : <h1 className='text-3xl text-white font-bold'>{currentTitle}</h1>}
         <ul>
         {currentChat?.map((chatMessage: any, index: any) => (
           <li key={index} className="my-5">
