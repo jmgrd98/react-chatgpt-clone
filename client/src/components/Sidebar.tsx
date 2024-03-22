@@ -45,7 +45,7 @@ const Sidebar = () => {
                 )}
             </ul>
             <nav className=''>
-                <p>Made by João Dantas</p>
+                <a href='https://github.com/jmgrd98'>Made by João Dantas</a>
             </nav>
         </section>
     );
