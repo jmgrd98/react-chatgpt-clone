@@ -58,7 +58,7 @@ function App() {
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4',
           messages: [
               {
                   role: 'user',
@@ -86,8 +86,8 @@ function App() {
   return (
     <div className="flex h-screen w-screen">
       <Sidebar/>
-      <section className='bg-gray-900 h-screen w-full flex flex-col items-center justify-between p-5'>
-        {(!currentTitle || !previousChats.length) ? <h1 className='text-3xl text-white font-bold'>CloneGPT</h1> : <h1 className='text-3xl text-white font-bold'>{currentTitle}</h1>}
+      <section className='bg-gray-900 h-screen w-full flex flex-col items-left justify-between p-5'>
+        <h1 className='text-3xl text-white font-bold mx-auto'>{(!currentTitle || !previousChats.length) ? 'CloneGPT' : currentTitle}</h1>
         <ul>
         {currentChat?.map((chatMessage: any, index: any) => (
           <li key={index} className="my-5">
