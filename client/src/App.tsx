@@ -4,7 +4,6 @@ import Sidebar from "./components/Sidebar.tsx";
 import { useChatContext } from "./context/ChatContext.tsx";
 import { Typewriter } from 'react-simple-typewriter';
 import ReactMarkdown from 'react-markdown';
-const { REACT_APP_OPENAI_API_KEY } = import.meta.env;
 
 function App() {
   const { 
@@ -50,11 +49,12 @@ function App() {
   }
 
   const getMessages = async () => {
+    const apiKey = process.env.REACT_APP_OPENAI_API_KEY
 
     const options = {
       method: 'POST',
       headers: {
-          'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({
