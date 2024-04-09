@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar.tsx";
 import { useChatContext } from "./context/ChatContext.tsx";
 import { Typewriter } from 'react-simple-typewriter';
 import ReactMarkdown from 'react-markdown';
+import Loader from "./components/Loader.tsx";
 
 function App() {
   const { 
@@ -18,6 +19,7 @@ function App() {
   } = useChatContext();
 
   const [inputValue, setInputValue] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!currentTitle && value && message) {
@@ -51,6 +53,8 @@ function App() {
   const getMessages = async () => {
     const apiKey = process.env.REACT_APP_OPENAI_API_KEY
 
+    setLoading(true);
+
     const options = {
       method: 'POST',
       headers: {
@@ -77,6 +81,7 @@ function App() {
       } catch (error) {
           console.error(error);
         } finally {
+          setLoading(false);
           setInputValue('');
         }
   };
@@ -86,7 +91,7 @@ function App() {
   return (
     <div className="flex h-screen w-screen">
       <Sidebar/>
-      <section className='bg-gray-900 h-screen w-full flex flex-col items-left justify-between p-5'>
+      <section className='bg-gray-900 h-screen w-full flex flex-col items-left justify-between p-5 overflow-y-scroll'>
         <h1 className='text-3xl text-white font-bold mx-auto'>{(!currentTitle || !previousChats.length) ? 'CloneGPT' : currentTitle}</h1>
         <ul>
         {currentChat?.map((chatMessage: any, index: any) => (
@@ -134,7 +139,9 @@ function App() {
               type='text'
             />
             <div onClick={getMessages}>
-              <IoMdSend className="text-white"/>
+
+              {loading ? <Loader />: <IoMdSend className="text-white"/>}
+              
             </div>
           </div>
         </div>
