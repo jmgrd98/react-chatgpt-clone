@@ -62,7 +62,7 @@ function App() {
 
   const getMessages = async () => {
     const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
-  
+    setStop(false);
     setLoading(true);
   
     const options = {
@@ -109,7 +109,7 @@ function App() {
     <div className="flex h-screen w-screen">
       <Sidebar/>
       <section className='bg-gray-900 h-screen w-full flex flex-col items-left justify-between p-5 overflow-y-scroll'>
-        <h1 className='text-3xl text-white font-bold mx-auto'>{(!currentTitle || !previousChats.length) ? 'CloneGPT' : currentTitle}</h1>
+        <h1 className='text-3xl text-white font-bold mx-auto'>{((!currentTitle || !previousChats.length) || stop) ? 'CloneGPT' : currentTitle}</h1>
         <ul>
         {currentChat?.map((chatMessage: any, index: any) => (
           <li key={index} className="my-5">
@@ -140,7 +140,6 @@ function App() {
                       onLoopDone={() => {
                         setLoading(false);
                         setTyping(false);
-                        setStop(false);
                       }}
                       onType={(count: number) => {
                         if (stop) {
