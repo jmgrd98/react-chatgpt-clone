@@ -19,21 +19,13 @@ function App() {
     updateValue
   } = useChatContext();
 
-  const [inputValue, setInputValue] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [typing, setTyping] = useState(false);
-  const [stop, setStop] = useState(false);
-
-  const [text, helper] = useTypewriter({
-    words: [message?.content || ''],
-    typeSpeed: stop ? 0 : 20,
-    onLoopDone: () => {
-      setTyping(false);
-      setStop(false);
-    }
-  });
+  const [text, helper] = useTypewriter({});
 
   const { isType, isDone } = helper;
+
+  const [inputValue, setInputValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [stop, setStop] = useState(false);
 
   useEffect(() => {
     if (!currentTitle && value && message) {
@@ -92,7 +84,6 @@ function App() {
       const data = await response.json();
       updateMessage(data.choices[0].message);
       updateValue(inputValue);
-      setTyping(true); // Set typing to true when message is being sent
     } catch (error) {
       console.error(error);
     } finally {
@@ -102,7 +93,6 @@ function App() {
   };
 
   const stopTyping = () => {
-    setTyping(false);
     setStop(true);
   }
   
@@ -138,7 +128,18 @@ function App() {
                       {chatMessage.content || ''}
                     </ReactMarkdown>
                   ) : (
-                    <span>{text}</span>
+                    <Typewriter
+                      words={[chatMessage.content]}
+                      typeSpeed={20}
+                      onLoopDone={() => {
+                        console.log(isType)
+                        console.log(isDone)
+                      }}
+                      onType={() => {
+                        console.log(isType)
+                      }}
+                    />
+                    // <p>{text}</p>
                   )}
                 </>
               ) : chatMessage.content}
@@ -158,9 +159,9 @@ function App() {
             />
 
             <div onClick={getMessages} className="relative">
-              {loading && !typing && <Loader />}
-              {!loading && !typing && <IoMdSend className="text-white" />}
-              {typing && !isType && <FaRegStopCircle onClick={stopTyping} className="text-white cursor-pointer" />}
+              {loading && !isType && <Loader />}
+              {!loading && isType && <IoMdSend className="text-white" />}
+              {!loading && !isType && <FaRegStopCircle onClick={stopTyping} className="text-white cursor-pointer" />}
             </div>
 
 
