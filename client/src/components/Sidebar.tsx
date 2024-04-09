@@ -31,7 +31,7 @@ const Sidebar = () => {
     const uniqueTitles = Array.from(new Set(previousChats.map((previousChat: any) => previousChat.title)));
 
     return (
-        <section className='h-screen w-1/6 bg-black p-5 text-white flex flex-col justify-between'>
+        <section className='h-screen w-1/5 bg-black p-5 text-white flex flex-col justify-between'>
             <button onClick={createNewChat} className='border-white bg-transparent text-white w-full rounded-xl p-3 mb-10'>+ New Chat</button>
             <ul className='flex flex-col items-center gap-5'>
                 {uniqueTitles?.map((uniqueTitle, index) => (
