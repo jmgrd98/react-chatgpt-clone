@@ -6,6 +6,7 @@ import { Typewriter, useTypewriter } from 'react-simple-typewriter';
 import ReactMarkdown from 'react-markdown';
 import Loader from "./components/Loader.tsx";
 import { FaRegStopCircle } from "react-icons/fa";
+import TypewriterComponent from 'typewriter-effect';
 
 function App() {
   const { 
@@ -27,6 +28,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [typing, setTyping] = useState(false);
   const [stop, setStop] = useState(false);
+
+  const [newChatMessage, setNewChatMessage] = useState('');
 
   useEffect(() => {
     if (!currentTitle && value && message) {
@@ -98,12 +101,6 @@ function App() {
     setTyping(false);
     setStop(true);
   }
-
-  const handleStopType = (count: number) => {
-    if (stop) {
-      
-    }
-  };
   
 
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
@@ -116,7 +113,7 @@ function App() {
         <ul>
         {currentChat?.map((chatMessage: any, index: any) => (
           <li key={index} className="my-5">
-            <p className="text-gray-300 font-bold">{chatMessage.role}</p>
+            <p className="text-gray-300 font-bold">{stop ? '' : chatMessage.role}</p>
             <div className="text-gray-300" id="message">
               {chatMessage.role === 'CloneGPT' ? (
                 <>
@@ -138,18 +135,22 @@ function App() {
                     </ReactMarkdown>
                   ) : (
                     <Typewriter
-                      words={[chatMessage.content]}
+                      words={stop ? [newChatMessage] : [chatMessage.content]}
                       typeSpeed={20}
                       onLoopDone={() => {
                         setLoading(false);
                         setTyping(false);
-                        console.log(isType)
+                        setStop(false);
                       }}
-                      onType={handleStopType}
+                      onType={(count: number) => {
+                        if (stop) {
+                          setNewChatMessage(prevMessage => chatMessage.content.slice(0, count));
+                        }
+                      }}
                     />
                   )}
                 </>
-              ) : chatMessage.content}
+              ) : (stop ? '' : chatMessage.content)}
             </div>
           </li>
         ))}
