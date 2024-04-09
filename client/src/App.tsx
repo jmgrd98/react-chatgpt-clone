@@ -25,6 +25,7 @@ function App() {
 
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [typing, setTyping] = useState(false);
   const [stop, setStop] = useState(false);
 
   useEffect(() => {
@@ -88,13 +89,21 @@ function App() {
       console.error(error);
     } finally {
       setLoading(false);
+      setTyping(true);
       setInputValue('');
     }
   };
 
   const stopTyping = () => {
+    setTyping(false);
     setStop(true);
   }
+
+  const handleStopType = (count: number) => {
+    if (stop) {
+      
+    }
+  };
   
 
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
@@ -132,14 +141,12 @@ function App() {
                       words={[chatMessage.content]}
                       typeSpeed={20}
                       onLoopDone={() => {
-                        console.log(isType)
-                        console.log(isDone)
-                      }}
-                      onType={() => {
+                        setLoading(false);
+                        setTyping(false);
                         console.log(isType)
                       }}
+                      onType={handleStopType}
                     />
-                    // <p>{text}</p>
                   )}
                 </>
               ) : chatMessage.content}
@@ -158,10 +165,10 @@ function App() {
               type='text'
             />
 
-            <div onClick={getMessages} className="relative">
+            <div className="relative">
               {loading && !isType && <Loader />}
-              {!loading && isType && <IoMdSend className="text-white" />}
-              {!loading && !isType && <FaRegStopCircle onClick={stopTyping} className="text-white cursor-pointer" />}
+              {!loading && !typing && <IoMdSend onClick={getMessages} className="text-white cursor-pointer" />}
+              {!loading && typing && <FaRegStopCircle onClick={stopTyping} className="text-white cursor-pointer" />}
             </div>
 
 
