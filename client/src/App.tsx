@@ -2,9 +2,10 @@ import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar.tsx";
 import { useChatContext } from "./context/ChatContext.tsx";
-import { Typewriter } from 'react-simple-typewriter';
+import { Typewriter, useTypewriter } from 'react-simple-typewriter';
 import ReactMarkdown from 'react-markdown';
 import Loader from "./components/Loader.tsx";
+import { FaRegStopCircle } from "react-icons/fa";
 
 function App() {
   const { 
@@ -20,6 +21,19 @@ function App() {
 
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [stop, setStop] = useState(false);
+
+  const [text, helper] = useTypewriter({
+    words: [message?.content || ''],
+    typeSpeed: stop ? 0 : 20,
+    onLoopDone: () => {
+      setTyping(false);
+      setStop(false);
+    }
+  });
+
+  const { isType, isDone } = helper;
 
   useEffect(() => {
     if (!currentTitle && value && message) {
@@ -51,40 +65,47 @@ function App() {
   }
 
   const getMessages = async () => {
-    const apiKey = process.env.REACT_APP_OPENAI_API_KEY
-
+    const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+  
     setLoading(true);
-
+  
     const options = {
       method: 'POST',
       headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-          model: 'gpt-4',
-          messages: [
-              {
-                  role: 'user',
-                  content: inputValue
-              }
-          ],
-          max_tokens: 1000
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'user',
+            content: inputValue
+          }
+        ],
+        max_tokens: 1000
       })
-  }
-
-  try {
-        const response = await fetch('\n' + 'https://api.openai.com/v1/chat/completions', options);
-        const data = await response.json();
-        updateMessage(data.choices[0].message);
-        updateValue(inputValue);
-      } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
-          setInputValue('');
-        }
+    };
+  
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', options);
+      const data = await response.json();
+      updateMessage(data.choices[0].message);
+      updateValue(inputValue);
+      setTyping(true); // Set typing to true when message is being sent
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setInputValue('');
+    }
   };
+
+  const stopTyping = () => {
+    setTyping(false);
+    setStop(true);
+  }
+  
 
   const currentChat = previousChats.filter((previousChat: any) => previousChat.title === currentTitle);
 
@@ -117,10 +138,7 @@ function App() {
                       {chatMessage.content || ''}
                     </ReactMarkdown>
                   ) : (
-                    <Typewriter
-                      words={[chatMessage.content]}
-                      typeSpeed={20}
-                    />
+                    <span>{text}</span>
                   )}
                 </>
               ) : chatMessage.content}
@@ -133,16 +151,19 @@ function App() {
             <input 
               placeholder="Type your message..." 
               value={inputValue} 
-              onChange={handleInputChange} 
+              onChange={handleInputChange}
               onKeyPress={handleKeyPress}
               className='w-full h-10 bg-transparent border-2 text-white rounded border-gray-400 p-2' 
               type='text'
             />
-            <div onClick={getMessages}>
 
-              {loading ? <Loader />: <IoMdSend className="text-white"/>}
-              
+            <div onClick={getMessages} className="relative">
+              {loading && !typing && <Loader />}
+              {!loading && !typing && <IoMdSend className="text-white" />}
+              {typing && !isType && <FaRegStopCircle onClick={stopTyping} className="text-white cursor-pointer" />}
             </div>
+
+
           </div>
         </div>
       </section>
